@@ -1,8 +1,9 @@
 export interface ITodo {
   todo: string
   id: string
-  parent?: string
-  subtodos?: ITodo[]
+  parentId?: string
+  children?: ITodo[]
+  isMain: boolean
 }
 
 export interface IUser {

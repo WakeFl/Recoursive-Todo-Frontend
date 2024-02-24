@@ -16,16 +16,9 @@ function Todo({ todo }: IProps) {
   const [updatedText, setUpdatedText] = useState(todo.todo)
   const [isOpenForm, setIsOpenForm] = useState(false)
 
-  const isSubtodo = !!todo.parent
-
   const [deleteTodo, { isSuccess }] = todoAPI.useDeleteTodoMutation()
   const [updateTodo, {}] = todoAPI.useUpdateTodoMutation()
-
-  const [deleteSubtodo, {}] = subtodoAPI.useDeleteTodoMutation()
-  const [createSubtodo, {}] = subtodoAPI.useCreateNewTodoMutation()
-  const [updateSubtodo, {}] = subtodoAPI.useUpdateTodoMutation()
-
-  const { data: todos } = subtodoAPI.useFetchAllTodosQuery(+todo.id)
+  const [createTodo, {}] = todoAPI.useCreateNewTodoMutation()
 
   const removeTodo = async () => {
     await deleteTodo(Number(todo.id))
@@ -40,23 +33,8 @@ function Todo({ todo }: IProps) {
       setIsUpdate(!isUpdate)
     }
   }
-
-  const updateSub = () => {
-    if (isUpdate) {
-      updateSubtodo({ todo: updatedText, id: Number(todo.id) })
-      setIsUpdate(!isUpdate)
-    } else {
-      setIsUpdate(!isUpdate)
-    }
-  }
-
-  const removeSubtodo = async () => {
-    await deleteSubtodo(Number(todo.id))
-    toast.warning('You deleted subtodo')
-  }
-
   const createNewSubtodo = () => {
-    createSubtodo({ todo: subtaskText, parent: +todo.id })
+    createTodo({ todo: subtaskText, isMain: false, parentId: todo.id })
     setIsOpenForm(!isOpenForm)
   }
 
@@ -75,7 +53,7 @@ function Todo({ todo }: IProps) {
         )}
         <Flex>
           <Button
-            onClick={isSubtodo ? updateSub : update}
+            onClick={update}
             _hover={{ backgroundColor: 'grey' }}>
             {isUpdate ? 'Submit Todo' : 'Update Todo'}
           </Button>
@@ -85,7 +63,7 @@ function Todo({ todo }: IProps) {
             {isOpenForm ? ' - ' : ' + '}
           </Button>
           <Button
-            onClick={isSubtodo ? removeSubtodo : removeTodo}
+            onClick={removeTodo}
             _hover={{ backgroundColor: 'grey' }}>
             Delete Todo
           </Button>
@@ -101,8 +79,8 @@ function Todo({ todo }: IProps) {
         </Box>
       )}
       <Box className={styles.subTodo}>
-        {todos &&
-          todos.map((todo: ITodo) => (
+        {todo.children &&
+          todo.children.map((todo: ITodo) => (
             <Todo
               key={todo.id}
               todo={todo}

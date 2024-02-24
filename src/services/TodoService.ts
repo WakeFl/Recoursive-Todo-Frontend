@@ -16,7 +16,10 @@ export const todoAPI = createApi({
       }),
       providesTags: (result) => ['Todo'],
     }),
-    createNewTodo: build.mutation<ITodo, { todo: string }>({
+    createNewTodo: build.mutation<
+      ITodo,
+      { todo: string; isMain: boolean; parentId?: string }
+    >({
       query: (todo) => ({
         url: '/todo',
         method: 'POST',

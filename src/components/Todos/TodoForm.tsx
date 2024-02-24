@@ -11,7 +11,7 @@ function TodoForm() {
   const onSubmitHandler = async (event: SyntheticEvent) => {
     try {
       event.preventDefault()
-      const data = await createTodo({ todo: text })
+      const data = await createTodo({ todo: text, isMain: true })
       if (data) {
         toast.success('You added new todo')
       }
