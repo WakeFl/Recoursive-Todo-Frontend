@@ -5,7 +5,6 @@ import { ITodo } from 'src/models'
 import { toast } from 'react-toastify'
 import styles from './Todo.module.css'
 import { todoAPI } from 'src/services/TodoService'
-import { subtodoAPI } from 'src/services/SubtodoService'
 
 interface IProps {
   todo: ITodo
