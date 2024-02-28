@@ -26,9 +26,9 @@ const Auth = () => {
   ] = authAPI.useLoginMutation()
 
   const isAuth = useAuth()
-
   useEffect(() => {
     if (isAuth) navigate('/')
+    console.log(isAuth)
   }, [isAuth])
 
   const registrationHandler = async (e: BaseSyntheticEvent) => {
@@ -50,7 +50,8 @@ const Auth = () => {
   useEffect(() => {
     if (loginData && successLogIn) {
       setTokenToLocalStorage('token', loginData.token)
-      dispatch(logIn({ email: loginData.email, token: loginData.token }))
+      setTokenToLocalStorage('refreshToken', loginData.refreshToken)
+      dispatch(logIn())
     }
   }, [loginData])
 
@@ -61,7 +62,9 @@ const Auth = () => {
   }, [errorLogIn])
 
   useEffect(() => {
-    toast.error('Something went wrong')
+    if (errorSignIn) {
+      toast.error('Something went wrong')
+    }
   }, [errorSignIn])
 
   return (

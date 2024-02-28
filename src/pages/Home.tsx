@@ -11,15 +11,7 @@ import { useNavigate } from 'react-router-dom'
 
 function Home() {
   const isAuth = useAuth()
-  const dispatch = useAppDispatch()
-  const { logout } = userSlice.actions
   const navigate = useNavigate()
-
-  const logoutHandler = () => {
-    dispatch(logout())
-    removeTokenFromLocalStorage('token')
-    toast.success('You logged out')
-  }
 
   useEffect(() => {
     if (isAuth === false) navigate('/auth')
@@ -27,27 +19,11 @@ function Home() {
 
   return (
     <>
-      {isAuth ? (
+      {isAuth && (
         <Box className='App'>
-          <Button
-            onClick={logoutHandler}
-            position='absolute'
-            top='0'
-            right='30px'>
-            Log out
-          </Button>
           <TodoForm />
           <TodoList />
         </Box>
-      ) : (
-        <Button
-          as={Link}
-          href='/auth'
-          position='absolute'
-          top='0'
-          right='30px'>
-          Login
-        </Button>
       )}
     </>
   )

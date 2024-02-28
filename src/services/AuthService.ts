@@ -1,7 +1,13 @@
 import { buildCacheCollectionHandler } from '@reduxjs/toolkit/dist/query/core/buildMiddleware/cacheCollection'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getTokenFromLocalStorage } from 'src/helpers/localstorage.helper'
-import { IResponseUserData, IUser, IUserData } from 'src/models'
+import {
+  IAllUserData,
+  IResponseUserData,
+  IStat,
+  IUser,
+  IUserData,
+} from 'src/models'
 
 export const authAPI = createApi({
   reducerPath: 'authAPI',
@@ -14,7 +20,7 @@ export const authAPI = createApi({
         method: 'POST',
         body: user,
         headers: {
-          Authorization: 'Bearer ' + getTokenFromLocalStorage(),
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
         },
       }),
     }),
@@ -24,7 +30,7 @@ export const authAPI = createApi({
         method: 'POST',
         body: user,
         headers: {
-          Authorization: 'Bearer ' + getTokenFromLocalStorage(),
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
         },
       }),
     }),
@@ -32,7 +38,25 @@ export const authAPI = createApi({
       query: () => ({
         url: '/auth/profile',
         headers: {
-          Authorization: 'Bearer ' + getTokenFromLocalStorage(),
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
+        },
+      }),
+    }),
+    getAll: build.query<IAllUserData[], ''>({
+      query: () => ({
+        url: '/user/all',
+      }),
+    }),
+    getStat: build.query<IStat[], ''>({
+      query: () => ({
+        url: '/user/statistic',
+      }),
+    }),
+    refreshToken: build.query<IUser, ''>({
+      query: () => ({
+        url: '/auth/refresh',
+        headers: {
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('refreshToken'),
         },
       }),
     }),

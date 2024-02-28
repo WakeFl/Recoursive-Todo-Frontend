@@ -5,13 +5,13 @@ import { ITodo } from 'src/models'
 export const todoAPI = createApi({
   reducerPath: 'todoAPI',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3005/api' }),
-  tagTypes: ['Todo'],
+  tagTypes: ['Todo', 'Like'],
   endpoints: (build) => ({
     fetchAllTodos: build.query<ITodo[], ''>({
       query: () => ({
         url: '/todo',
         headers: {
-          Authorization: 'Bearer ' + getTokenFromLocalStorage(),
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
         },
       }),
       providesTags: (result) => ['Todo'],
@@ -25,7 +25,7 @@ export const todoAPI = createApi({
         method: 'POST',
         body: todo,
         headers: {
-          Authorization: 'Bearer ' + getTokenFromLocalStorage(),
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
         },
       }),
       invalidatesTags: ['Todo'],
@@ -35,7 +35,7 @@ export const todoAPI = createApi({
         url: `/todo/${id}`,
         method: 'DELETE',
         headers: {
-          Authorization: 'Bearer ' + getTokenFromLocalStorage(),
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
         },
       }),
       invalidatesTags: ['Todo'],
@@ -46,10 +46,33 @@ export const todoAPI = createApi({
         method: 'PATCH',
         body: { todo },
         headers: {
-          Authorization: 'Bearer ' + getTokenFromLocalStorage(),
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
         },
       }),
       invalidatesTags: ['Todo'],
+    }),
+    like: build.mutation<number, { todoId: string }>({
+      query: (id) => ({
+        url: `/like`,
+        method: 'POST',
+        body: id,
+        headers: {
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
+        },
+      }),
+    }),
+    hasLike: build.query<boolean, number>({
+      query: (id) => ({
+        url: `/like/${id}`,
+        headers: {
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
+        },
+      }),
+    }),
+    getLike: build.query<number, number>({
+      query: (id) => ({
+        url: `/like/count/${id}`,
+      }),
     }),
   }),
 })
