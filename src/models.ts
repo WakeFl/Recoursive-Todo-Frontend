@@ -11,6 +11,7 @@ export interface IUser {
   email: string
   token: string
   refreshToken: string
+  role: string
 }
 
 export interface IUserData {

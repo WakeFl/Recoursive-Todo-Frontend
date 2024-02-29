@@ -2,7 +2,6 @@ import { Box, Button, Flex, Input, Text } from '@chakra-ui/react'
 import { useState } from 'react'
 import { RiTodoFill } from 'react-icons/ri'
 import { ITodo } from 'src/models'
-import { toast } from 'react-toastify'
 import styles from './Todo.module.css'
 import { todoAPI } from 'src/services/TodoService'
 
@@ -15,14 +14,8 @@ function Todo({ todo }: IProps) {
   const [updatedText, setUpdatedText] = useState(todo.todo)
   const [isOpenForm, setIsOpenForm] = useState(false)
 
-  const [deleteTodo, { isSuccess }] = todoAPI.useDeleteTodoMutation()
   const [updateTodo, {}] = todoAPI.useUpdateTodoMutation()
   const [createTodo, {}] = todoAPI.useCreateNewTodoMutation()
-
-  const removeTodo = async () => {
-    await deleteTodo(Number(todo.id))
-    toast.warning('You deleted todo')
-  }
 
   const update = () => {
     if (isUpdate) {
@@ -60,11 +53,6 @@ function Todo({ todo }: IProps) {
             _hover={{ backgroundColor: 'grey' }}
             onClick={() => setIsOpenForm(!isOpenForm)}>
             {isOpenForm ? ' - ' : ' + '}
-          </Button>
-          <Button
-            onClick={removeTodo}
-            _hover={{ backgroundColor: 'grey' }}>
-            Delete Todo
           </Button>
         </Flex>
       </Box>

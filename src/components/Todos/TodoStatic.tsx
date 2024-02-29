@@ -7,12 +7,14 @@ import { todoAPI } from 'src/services/TodoService'
 import { useAuth } from 'src/hooks/useAuth'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import { toast } from 'react-toastify'
 
 interface IProps {
   todo: ITodo
 }
 function TodoStatic({ todo }: IProps) {
   const { data: hasLike } = todoAPI.useHasLikeQuery(+todo.id)
+  const [deleteTodo, { isSuccess }] = todoAPI.useDeleteTodoMutation()
 
   const [liked, setLiked] = useState(false)
   const [count, setCount] = useState(todo.likes.length)
@@ -36,6 +38,11 @@ function TodoStatic({ todo }: IProps) {
     setLiked(!liked)
   }
 
+  const removeTodo = async () => {
+    await deleteTodo(Number(todo.id))
+    toast.warning('You deleted todo')
+  }
+
   return (
     <>
       <Box className={styles.todo}>
@@ -45,6 +52,11 @@ function TodoStatic({ todo }: IProps) {
         {isAuth && (
           <Button onClick={likeTodo}>{liked ? 'unlike' : 'like'}</Button>
         )}
+        <Button
+          onClick={removeTodo}
+          _hover={{ backgroundColor: 'grey' }}>
+          Delete Todo
+        </Button>
       </Box>
       <Box className={styles.subTodo}>
         {todo.children &&

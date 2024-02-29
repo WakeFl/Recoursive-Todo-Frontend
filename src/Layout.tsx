@@ -15,6 +15,7 @@ function Layout() {
   const logoutHandler = () => {
     dispatch(logout())
     removeTokenFromLocalStorage('token')
+    removeTokenFromLocalStorage('refreshToken')
     toast.success('You logged out')
   }
 

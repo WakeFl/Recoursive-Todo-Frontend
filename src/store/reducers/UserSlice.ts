@@ -3,10 +3,12 @@ import { IUser } from 'src/models'
 
 interface IUserState {
   isAuth: boolean
+  user: IUser | null
 }
 
 const initialState: IUserState = {
   isAuth: false,
+  user: null,
 }
 
 export const userSlice = createSlice({
@@ -15,6 +17,7 @@ export const userSlice = createSlice({
   reducers: {
     login: (state) => {
       state.isAuth = true
+      state.user = {}
     },
     logout: (state) => {
       state.isAuth = false
