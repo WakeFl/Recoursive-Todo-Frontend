@@ -40,6 +40,7 @@ export interface IAllUserData {
 export interface IStat {
   user_email: string
   user_id: number
+  user_role: string
   likecount: string
   todocount: string
 }

@@ -1,5 +1,5 @@
 import './App.css'
-import { Box, Button, Flex, Link } from '@chakra-ui/react'
+import { Box, Button, Flex, Link, Text } from '@chakra-ui/react'
 import { Outlet } from 'react-router-dom'
 import './index.css'
 import { useAuth } from './hooks/useAuth'
@@ -7,6 +7,7 @@ import { useAppDispatch } from './hooks/redux'
 import { userSlice } from './store/reducers/UserSlice'
 import { removeTokenFromLocalStorage } from './helpers/localstorage.helper'
 import { toast } from 'react-toastify'
+import { useSession } from './hooks/useSession'
 
 function Layout() {
   const dispatch = useAppDispatch()
@@ -20,6 +21,7 @@ function Layout() {
   }
 
   const isAuth = useAuth()
+  const session = useSession()
   return (
     <Box>
       <Box pb='60px'>
@@ -54,6 +56,17 @@ function Layout() {
             </Button>
           )}
         </Flex>
+
+        {session && (
+          <Text
+            position='absolute'
+            top='0'
+            left='30px'
+            fontSize={'lg'}>
+            {`${session.email}
+            ${session.role}`}
+          </Text>
+        )}
       </Box>
       <Outlet />
     </Box>

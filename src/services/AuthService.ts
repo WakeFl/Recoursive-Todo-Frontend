@@ -60,5 +60,15 @@ export const authAPI = createApi({
         },
       }),
     }),
+    toggleAdmin: build.mutation<IUser, { email: string }>({
+      query: (email) => ({
+        url: '/user/admin',
+        method: 'PATCH',
+        body: email,
+        headers: {
+          Authorization: 'Bearer ' + getTokenFromLocalStorage('token'),
+        },
+      }),
+    }),
   }),
 })

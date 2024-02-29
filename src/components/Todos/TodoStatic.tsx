@@ -1,4 +1,4 @@
-import { Box, Button, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Image, Input, Text } from '@chakra-ui/react'
 
 import { RiTodoFill } from 'react-icons/ri'
 import { ITodo } from 'src/models'
@@ -8,6 +8,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
+import { useSession } from 'src/hooks/useSession'
 
 interface IProps {
   todo: ITodo
@@ -18,6 +19,24 @@ function TodoStatic({ todo }: IProps) {
 
   const [liked, setLiked] = useState(false)
   const [count, setCount] = useState(todo.likes.length)
+
+  const session = useSession()
+
+  const [isUpdate, setIsUpdate] = useState(false)
+  const [updatedText, setUpdatedText] = useState(todo.todo)
+
+  const [isDeleted, setIsDeleted] = useState(false)
+
+  const [updateTodo, {}] = todoAPI.useUpdateTodoMutation()
+
+  const update = () => {
+    if (isUpdate) {
+      updateTodo({ todo: updatedText, id: Number(todo.id) })
+      setIsUpdate(!isUpdate)
+    } else {
+      setIsUpdate(!isUpdate)
+    }
+  }
 
   useEffect(() => {
     if (hasLike !== undefined) {
@@ -41,32 +60,71 @@ function TodoStatic({ todo }: IProps) {
   const removeTodo = async () => {
     await deleteTodo(Number(todo.id))
     toast.warning('You deleted todo')
+    setIsDeleted(true)
   }
 
   return (
     <>
-      <Box className={styles.todo}>
-        <RiTodoFill className={styles.todoIcon} />
-        <Text className={styles.todoText}>{todo.todo}</Text>
-        <Text>Likes {count}</Text>
-        {isAuth && (
-          <Button onClick={likeTodo}>{liked ? 'unlike' : 'like'}</Button>
-        )}
-        <Button
-          onClick={removeTodo}
-          _hover={{ backgroundColor: 'grey' }}>
-          Delete Todo
-        </Button>
-      </Box>
-      <Box className={styles.subTodo}>
-        {todo.children &&
-          todo.children.map((todo: ITodo) => (
-            <TodoStatic
-              key={todo.id}
-              todo={todo}
-            />
-          ))}
-      </Box>
+      {!isDeleted && (
+        <>
+          <Box className={styles.todo}>
+            <RiTodoFill className={styles.todoIcon} />
+            {isUpdate ? (
+              <Input
+                variant='flushed'
+                value={updatedText}
+                onChange={(e) => setUpdatedText(e.target.value)}
+              />
+            ) : (
+              <Text className={styles.todoText}>{updatedText}</Text>
+            )}
+            {(session?.role === 'superAdmin' || session?.role === 'admin') && (
+              <Flex>
+                <Button
+                  onClick={removeTodo}
+                  _hover={{ backgroundColor: 'grey' }}>
+                  Delete Todo
+                </Button>
+                <Button
+                  onClick={update}
+                  _hover={{ backgroundColor: 'grey' }}>
+                  {isUpdate ? 'Submit Todo' : 'Update Todo'}
+                </Button>
+              </Flex>
+            )}
+            <Flex
+              ml='10px'
+              alignItems='center'>
+              {session ? (
+                <Button
+                  onClick={likeTodo}
+                  variant='ghost'
+                  _hover={{ background: '#fff' }}
+                  w='70px'>
+                  <Image
+                    src={liked ? '/heart.svg' : '/heart-empty.svg'}></Image>
+                </Button>
+              ) : (
+                <Image
+                  w='40px'
+                  src={'/heart-empty.svg'}
+                  mr={'10px'}></Image>
+              )}
+
+              <Text>{count}</Text>
+            </Flex>
+          </Box>
+          <Box className={styles.subTodo}>
+            {todo.children &&
+              todo.children.map((todo: ITodo) => (
+                <TodoStatic
+                  key={todo.id}
+                  todo={todo}
+                />
+              ))}
+          </Box>
+        </>
+      )}
     </>
   )
 }

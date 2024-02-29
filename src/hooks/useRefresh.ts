@@ -17,7 +17,7 @@ export const useRefresh = () => {
     try {
       if (token) {
         if (data) {
-          dispatch(login())
+          dispatch(login(data))
         } else {
           refresh()
         }
@@ -33,8 +33,9 @@ export const useRefresh = () => {
     const refreshToken = getTokenFromLocalStorage('refreshToken')
     if (refreshToken) {
       if (refreshData) {
+        console.log(refreshData)
         setTokenToLocalStorage('token', refreshData.token)
-        dispatch(login())
+        dispatch(login(refreshData))
       } else {
         logout()
       }

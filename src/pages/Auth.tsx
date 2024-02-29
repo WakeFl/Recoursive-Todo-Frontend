@@ -51,7 +51,7 @@ const Auth = () => {
     if (loginData && successLogIn) {
       setTokenToLocalStorage('token', loginData.token)
       setTokenToLocalStorage('refreshToken', loginData.refreshToken)
-      dispatch(logIn())
+      dispatch(logIn(loginData))
     }
   }, [loginData])
 

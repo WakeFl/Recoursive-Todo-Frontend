@@ -7,7 +7,6 @@ import { useEffect } from 'react'
 
 function TodoList() {
   const { data: todos, refetch } = todoAPI.useFetchAllTodosQuery('')
-  console.log(todos)
   const isAuth = useAuth()
 
   useEffect(() => {
